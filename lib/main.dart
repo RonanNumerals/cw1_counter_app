@@ -27,6 +27,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   int _counter = 0;
+
   bool _isDark = false;
   bool _isFirstImage = true;
 
@@ -50,7 +51,35 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
   void _incrementCounter() {
-    setState(() => _counter++);
+    setState(() {
+      _counter++;
+    });
+  }
+
+  void _incrementCounterFive() {
+    setState(() {
+      _counter += 5;
+    });
+  }
+
+  void _incrementCounterTen() {
+    setState(() {
+      _counter += 10;
+    });
+  }
+
+  void _decrementCounter() {
+    if (_counter > 0){
+      setState(() {
+        _counter--;
+      });
+    }
+  }
+
+  void _resetCounter() {
+    setState(() {
+      _counter = 0;
+    });
   }
 
   void _toggleTheme() {
@@ -88,20 +117,45 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             children: [
               Text(
                 'Counter: $_counter',
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: TextStyle(color: _isDark ? Colors.white : Colors.black, fontSize: 20),
               ),
               const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: _incrementCounter,
-                child: const Text('Increment'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: _incrementCounter,
+                    child: const Text('+1'),
+                  ),
+                  const SizedBox(width: 12),
+                  ElevatedButton(
+                    onPressed: _incrementCounterFive,
+                    child: const Text('+5'),
+                  ),
+                  const SizedBox(width: 12),
+                  ElevatedButton(
+                    onPressed: _incrementCounterTen,
+                    child: const Text('+10'),
+                  ),
+                  const SizedBox(width: 12),
+                  ElevatedButton(
+                    onPressed: _decrementCounter,
+                    child: const Text('-1'),
+                  ),
+                  const SizedBox(width: 12),
+                  ElevatedButton(
+                    onPressed: _resetCounter,
+                    child: const Text('Reset'),
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
               FadeTransition(
                 opacity: _fade,
                 child: Image.asset(
-                  _isFirstImage ? 'assets/image1.png' : 'assets/image2.png',
-                  width: 180,
-                  height: 180,
+                  _isFirstImage ? 'assets/image2.png' : 'assets/image1.png',
+                  width: 190,
+                  height: 200,
                   fit: BoxFit.cover,
                 ),
               ),
