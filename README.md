@@ -1,16 +1,15 @@
-# cw1_counter_app
+## # cw1_counter_app
 
-A new Flutter project.
+This Flutter application features a counter with increment, decrement, and reset functionality, as well as a toggle for switching between two images with a fade animation. The app also includes a theme toggle for light and dark modes.
 
-## Getting Started
+For Task 1 we were asked to implement at least two of the enhancements provided. I dedided to implement Multi-step controls and Decrement + Reset buttons.
+- The program contains +1, +5, and +10 step buttons. When pressed, the step value is set to that button's value, and pressing increment adds to the counter by that value. The current step value is also displayed.
+- Since I implemented this step functionality, the decrement button will also remove the current step value from the counter, but the counter will not fall below 0.
+- The reset button simply sets the counter to 0.
 
-This project is a starting point for a Flutter application.
+For Task 2 we were asked to implement a toggle button that transitions between two images, so I chose a king and queen card that fade transition between each other.
 
-A few resources to get you started if this is your first Flutter project:
+## # Extra Notes
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- I was not sure if the decrement button was supposed to decrement by 1 or the current step value, but in the end I chose to have it decrement by the current step value.
+- Because the function of the reset button wasn't clarified, I wasn't sure if the button should reset the step value as well as the counter. I decided that the reset button would only reset the counter, not the step.
