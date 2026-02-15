@@ -1,3 +1,10 @@
+/*
+  Assignment: CW1 Counter & Toggle App
+  Author: Ronan Pelot
+  Description: This Flutter application features a counter with increment, decrement, and reset functionality, as well as a toggle for switching between two 
+               images with a fade animation. The app also includes a theme toggle for light and dark modes.
+*/
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -27,6 +34,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   int _counter = 0;
+  int _step = 1;
 
   bool _isDark = false;
   bool _isFirstImage = true;
@@ -52,23 +60,24 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
   // This function acts as the increment button for the counter. When pressed, it increases the counter by a specified step value (1, 5, or 10).
-  void _incrementCounter(int step) {
+  void _increment() {
     setState(() {
-      _counter += step;
+      _counter += _step;
     });
   }
 
-  // This function acts as the decrement button for the counter. When pressed, it decreases the counter by 1, but only if the counter is greater than 0 to prevent negative values.
-  void _decrementCounter() {
-    if (_counter > 0){
-      setState(() {
-        _counter--;
-      });
-    }
+  // This function acts as the decrement button for the counter. When pressed, it decreases the counter by the specified step value, but it ensures that the counter does not go below 0.
+  void _decrement() {
+    setState(() {
+      _counter -= _step;
+      if (_counter < 0) {
+        _counter = 0;
+      }
+    });
   }
 
   // This function acts as the reset button for the counter. When pressed, it sets the counter back to 0.
-  void _resetCounter() {
+  void _reset() {
     setState(() {
       _counter = 0;
     });
@@ -118,35 +127,51 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 style: TextStyle(color: _isDark ? Colors.white : Colors.black, fontSize: 20),
               ),
               const SizedBox(height: 12),
-              // This Row contains the buttons for incrementing, decrementing, and resetting the counter.
+              ElevatedButton(
+                    onPressed: _increment,
+                    child: const Text('Increment'),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Step: $_step',
+                // The text color is set to white in dark mode and black in light mode for better visibility.
+                style: TextStyle(color: _isDark ? Colors.white : Colors.black, fontSize: 20),
+              ),
+              const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Here we have the increment buttons for the counter, which call the _incrementCounter function with different step values (1, 5, and 10) when pressed.
+                  // Here we have the step selection buttons for the counter, which allow the user to choose how much to increment the counter by (1, 5, or 10). When pressed, they update the _step variable, which is used by the increment button.
                   ElevatedButton(
-                    onPressed: () => _incrementCounter(1),
+                    onPressed: () => setState(() => _step = 1),
                     child: const Text('+1'),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
-                    onPressed: () => _incrementCounter(5),
+                    onPressed: () => setState(() => _step = 5),
                     child: const Text('+5'),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
-                    onPressed: () => _incrementCounter(10),
+                    onPressed: () => setState(() => _step = 10),
                     child: const Text('+10'),
                   ),
-                  // Here we have the decrement button for the counter, which calls the _decrementCounter function when pressed. It will only decrement the counter if it is greater than 0 to prevent negative values.
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row (
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Here we have the decrement button for the counter, which calls the _decrement function when pressed. If _counter is 0, the button is disabled.
                   const SizedBox(width: 8),
                   ElevatedButton(
-                    onPressed: _decrementCounter,
-                    child: const Text('-1'),
+                    onPressed: _counter > 0 ? _decrement : null,
+                    child: const Text('Decrement'),
                   ),
-                  // Here we have the reset button for the counter, which calls the _resetCounter function when pressed. It will reset the counter back to 0.
+                  // Here we have the reset button for the counter, which calls the _reset function when pressed. If _counter is 0, the button is disabled since the counter is already at its reset state.
                   const SizedBox(width: 8),
                   ElevatedButton(
-                    onPressed: _resetCounter,
+                    onPressed: _counter > 0 ? _reset: null,
                     child: const Text('Reset'),
                   ),
                 ],
