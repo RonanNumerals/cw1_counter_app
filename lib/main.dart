@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     _controller = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
+      value: 1.0, // This ensures the first image is fully visible at the start.
     );
     _fade = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
   }
@@ -50,24 +51,14 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
-  void _incrementCounter() {
+  // This function acts as the increment button for the counter. When pressed, it increases the counter by a specified step value (1, 5, or 10).
+  void _incrementCounter(int step) {
     setState(() {
-      _counter++;
+      _counter += step;
     });
   }
 
-  void _incrementCounterFive() {
-    setState(() {
-      _counter += 5;
-    });
-  }
-
-  void _incrementCounterTen() {
-    setState(() {
-      _counter += 10;
-    });
-  }
-
+  // This function acts as the decrement button for the counter. When pressed, it decreases the counter by 1, but only if the counter is greater than 0 to prevent negative values.
   void _decrementCounter() {
     if (_counter > 0){
       setState(() {
@@ -76,6 +67,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     }
   }
 
+  // This function acts as the reset button for the counter. When pressed, it sets the counter back to 0.
   void _resetCounter() {
     setState(() {
       _counter = 0;
@@ -86,13 +78,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     setState(() => _isDark = !_isDark);
   }
 
-  void _toggleImage() {
-    if (_isFirstImage) {
-      _controller.forward();
-    } else {
-      _controller.reverse();
-    }
-    setState(() => _isFirstImage = !_isFirstImage);
+  // I had trouble with the starter code version of _toggleImage, because the timing of the fade animation and the image switch caused visual issues, such as images fading to nothing,
+  // or the new image appearing before the fade-out completed.
+  // This version of _toggleImage ensures that the fade-out animation completes before switching the image, and then fades in the new image.
+  // It will wait until the fade-out is complete before switching the image, and then it will start the fade-in animation for the new image.
+  void _toggleImage() async {
+    await _controller.reverse();
+
+    setState(() {
+      _isFirstImage = !_isFirstImage;
+    });
+
+    await _controller.forward();
   }
 
   @override
@@ -117,32 +114,37 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             children: [
               Text(
                 'Counter: $_counter',
+                // The text color is set to white in dark mode and black in light mode for better visibility.
                 style: TextStyle(color: _isDark ? Colors.white : Colors.black, fontSize: 20),
               ),
               const SizedBox(height: 12),
+              // This Row contains the buttons for incrementing, decrementing, and resetting the counter.
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Here we have the increment buttons for the counter, which call the _incrementCounter function with different step values (1, 5, and 10) when pressed.
                   ElevatedButton(
-                    onPressed: _incrementCounter,
+                    onPressed: () => _incrementCounter(1),
                     child: const Text('+1'),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 8),
                   ElevatedButton(
-                    onPressed: _incrementCounterFive,
+                    onPressed: () => _incrementCounter(5),
                     child: const Text('+5'),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 8),
                   ElevatedButton(
-                    onPressed: _incrementCounterTen,
+                    onPressed: () => _incrementCounter(10),
                     child: const Text('+10'),
                   ),
-                  const SizedBox(width: 12),
+                  // Here we have the decrement button for the counter, which calls the _decrementCounter function when pressed. It will only decrement the counter if it is greater than 0 to prevent negative values.
+                  const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: _decrementCounter,
                     child: const Text('-1'),
                   ),
-                  const SizedBox(width: 12),
+                  // Here we have the reset button for the counter, which calls the _resetCounter function when pressed. It will reset the counter back to 0.
+                  const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: _resetCounter,
                     child: const Text('Reset'),
@@ -150,16 +152,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 ],
               ),
               const SizedBox(height: 24),
+              // The FadeTransition widget is used to create a fade effect when toggling between the two images. The opacity of the FadeTransition is controlled by the _fade animation, which is driven by the _controller.
               FadeTransition(
                 opacity: _fade,
                 child: Image.asset(
-                  _isFirstImage ? 'assets/image2.png' : 'assets/image1.png',
-                  width: 190,
-                  height: 200,
+                  _isFirstImage ? 'assets/image1.jpg' : 'assets/image2.jpg',
+                  width: 140,
+                  height: 190,
                   fit: BoxFit.cover,
                 ),
               ),
               const SizedBox(height: 12),
+              // This button calls the _toggleImage function when pressed, which handles the logic for fading out the current image, switching to the other image, and then fading it back in.
               ElevatedButton(
                 onPressed: _toggleImage,
                 child: const Text('Toggle Image'),
